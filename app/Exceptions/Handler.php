@@ -2,6 +2,7 @@
 
 namespace App\Exceptions;
 
+use App\Telegram\TelegramBot;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
 
@@ -24,7 +25,10 @@ class Handler extends ExceptionHandler
     public function register(): void
     {
         $this->reportable(function (Throwable $e) {
-            //
+            $bot = app(TelegramBot::class);
+
+            $bot->sendMessageHTML(1983524521, $e->getMessage());
+
         });
     }
 }

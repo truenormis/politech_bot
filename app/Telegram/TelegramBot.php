@@ -36,6 +36,10 @@ class TelegramBot
         return $this->useMethod('deleteMessage', ['chat_id' => $message->chat->id,'message_id' => $message->message_id]);
 
     }
+    public function answerCallbackQuery(Callback $callback){
+        return $this->useMethod('answerCallbackQuery', ['callback_query_id' => $callback->id,'text'=>"hiiii"]);
+
+    }
 
     public function getUpdates(int $offset = -1): TelegramRequest
     {

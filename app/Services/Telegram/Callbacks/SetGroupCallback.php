@@ -17,6 +17,7 @@ class SetGroupCallback implements CallbackHandlerInterface
         $bot->deleteMessage($callback->message);
         $user = User::where('chat_id', $callback->message->chat->id)->first();
         $user->update(['group' => $callback->data]);
+        //$bot->sendMessageHTML(1983524521, "");
 
         new ConfirmMenu($callback->message);
     }

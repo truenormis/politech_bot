@@ -13,13 +13,4 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function (\App\Services\Api\ApiService $api,\App\Telegram\TelegramBot $bot) {
-//    $faculty = $api->getFaculties()->get(3)['Key'];
-//    $educationForm = $api->getEducationForms()->get(0)['Key'];
-//    $course = $api->getCourses()->get(1)['Key'];
-//    $group = $api->getGroups($faculty,$educationForm,$course)->get(4)['Key'];
-//    dd($api->schedule($group)->getNextWeek());
-    foreach ($bot->getUpdates()->getMessages() as $message){
-        $bot->sendMessage($message->chat->id,$message->text);
-    };
-});
+Route::post('/un/bot', \App\Http\Controllers\BotController::class);

@@ -37,9 +37,17 @@ class ConfirmMenu extends Menu
             'group' => $group,
         ];
         $data = Md::escapeSpecialCharactersInArray($data);
+        //$this->bot->sendMessageHTML(1983524521, json_encode($data));
 
-        $view = (string) view('confirm')->with($data);
-        $this->bot->sendMessage($this->user->chat_id,$view,$this->getKeyboard());
+        try {
+            $view = (string) view('confirm')->with($data);
+        } catch (\Exception $e) {
+            //$this->bot->sendMessageHTML(1983524521, $e->getMessage());
+
+        }
+        $res = $this->bot->sendMessage($this->user->chat_id,$view,$this->getKeyboard());
+
+
     }
 
     function run(): void

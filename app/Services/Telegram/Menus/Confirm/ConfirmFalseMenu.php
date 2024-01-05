@@ -11,14 +11,14 @@ class ConfirmFalseMenu extends Menu
 
     function transfer()
     {
-        $this->bot->sendMessage($this->user->chat_id,"Давайте попробуем заново заполнить данные 🔄");
+        $this->bot->sendMessageHTML($this->user->chat_id,"Давайте попробуем заново заполнить данные 🔄");
 
         new SetFacultyMenu($this->message);
     }
 
     function run()
     {
-        $this->bot->sendMessage($this->user->chat_id,"Давайте попробуем заново заполнить данные 🔄");
+        $this->bot->sendMessageHTML($this->user->chat_id,"Давайте попробуем заново заполнить данные 🔄");
 
         new SetFacultyMenu($this->message);
     }

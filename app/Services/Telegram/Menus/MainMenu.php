@@ -9,7 +9,7 @@ class MainMenu extends Menu
 {
     protected string $name = 'main';
     protected array $keyboard = [
-        ['📅 Рассписание' => ScheduleMenu::class],
+        ['📅 Расписание' => ScheduleMenu::class],
         ['❓ Помощь' => HelpMenu::class], // Пункт "Помощь"
         ['⚙️ Настройки' => SettingsMenu::class] // Пункт "Настройки"
     ];

@@ -1,5 +1,5 @@
 @foreach($data as $day => $value)
-<b>{{$day}}</b>
+<b>{{$day}}</b> <b>{{collect($value->first())->first()['full_date']}}</b>
 
 @foreach($value as $key => $pars)
 {{ $key }} {{ $pars->first()['study_time_begin'] }} - {{ $pars->first()['study_time_end'] }}
