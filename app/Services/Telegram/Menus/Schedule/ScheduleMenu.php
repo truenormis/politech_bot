@@ -8,18 +8,12 @@ use App\Services\Telegram\Menus\Menu;
 class ScheduleMenu extends Menu
 {
     protected string $name = 'schedule';
-    protected array $keyboard = [
-        ['📅 Сегодняшнее расписание' => ScheduleTodayMenu::class],
-        ['📆 Завтрашнее расписание' => ScheduleTomorrowMenu::class],
-        ['🗓️ Расписание на эту неделю' => ScheduleThisWeekMenu::class],
-        ['📆 Расписание на следующую неделю' => ScheduleNextWeekMenu::class],
-        ['↩️ Вернуться в главное меню' => MainMenu::class],
-    ];
+
 
     function transfer()
     {
         //dd($this->getKeyboard());
-        $this->bot->sendMessageHTML($this->user->chat_id,"😊 Какое рассписание вы хотите посмотреть?",$this->getKeyboard());
+        $this->bot->sendMessageHTML($this->user->chat_id,__("messages.schedule"),$this->getKeyboard());
 
     }
 
@@ -30,7 +24,7 @@ class ScheduleMenu extends Menu
         }
         $this->bot->sendMessageHTML(
             $this->user->chat_id,
-            "Выберите пункт в меню, чтобы просмотреть соответствующее расписание. 📅📆🗓️",
+            __("message.schedule_error"),
             $this->getKeyboard()
         );
     }

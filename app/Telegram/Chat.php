@@ -3,6 +3,8 @@
 namespace App\Telegram;
 
 
+
+use App\Models\User;
 use Illuminate\Support\Collection;
 
 class Chat
@@ -13,5 +15,13 @@ class Chat
     {
         $this->id = $chat->get('id');
         $this->username = $chat->has('username') ? $chat->get('username') : "";
+
+        $this->setChatLocale();
+    }
+
+    private function setChatLocale()
+    {
+        $user = User::firstOrCreate(['chat_id' => $this->id])->first();
+        app()->setLocale($user->locale);
     }
 }

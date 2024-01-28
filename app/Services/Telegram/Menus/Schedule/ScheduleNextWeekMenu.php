@@ -23,7 +23,7 @@ class ScheduleNextWeekMenu extends Menu
             //dump($view);
             $this->bot->sendMessageHTML($this->user->chat_id,$view);
         }else{
-            $this->bot->sendMessageHTML($this->user->chat_id,"На следующей неделе пар не будет 🤖");
+            $this->bot->sendMessageHTML($this->user->chat_id,__("messages.schedule_next_week"));
         }
 
 

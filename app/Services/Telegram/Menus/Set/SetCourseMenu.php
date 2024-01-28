@@ -21,11 +21,11 @@ class SetCourseMenu extends Menu
         $buttons = array_chunk($buttons, 2);
         $keyboard = $this->bot->createInlineKeyboard($buttons);
 
-        $this->bot->sendMessageHTML($this->user->chat_id,"Теперь выберите курс, на котором вы учитесь:",$keyboard);
+        $this->bot->sendMessageHTML($this->user->chat_id,__("messages.course"),$keyboard);
     }
 
     function run()
     {
-        $this->bot->sendMessageHTML($this->user->chat_id,"⚠️ <b>Внимание!</b> Пожалуйста, выберите курс, на котором вы учитесь:");
+        $this->bot->sendMessageHTML($this->user->chat_id,__("messages.course_error"));
     }
 }

@@ -22,14 +22,14 @@ class SetFacultyMenu extends Menu
         $buttons = array_chunk($buttons, 2);
         $keyboard = $this->bot->createInlineKeyboard($buttons);
 
-        $this->bot->sendMessageHTML($this->user->chat_id,"Для начала работы, выберите свой институт:",$keyboard);
+        $this->bot->sendMessageHTML($this->user->chat_id,__('messages.set_faculty'),$keyboard);
     }
 
     function run()
     {
         $this->bot->sendMessageHTML(
             $this->user->chat_id,
-            "⚠️ <b>Ошибка!</b> Для продолжения работы выберите свой институт.\n\n"
+            __('messages.set_faculty_error')
         );
     }
 }

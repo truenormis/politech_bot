@@ -25,7 +25,7 @@ class ScheduleTodayMenu extends Menu
             //dump($view);
             $this->bot->sendMessageHTML($this->user->chat_id,$view);
         }else{
-            $this->bot->sendMessageHTML($this->user->chat_id,"Сегодня пар не будем 🤖");
+            $this->bot->sendMessageHTML($this->user->chat_id,__("messages.schedule_today"));
         }
 
         new ScheduleMenu($this->message);

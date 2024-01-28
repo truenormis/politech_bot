@@ -21,11 +21,11 @@ class SetEducationFormMenu extends Menu
         $buttons = array_chunk($buttons, 2);
         $keyboard = $this->bot->createInlineKeyboard($buttons);
 
-        $this->bot->sendMessageHTML($this->user->chat_id,"Выберите форму обучения 🌞/🌜:",$keyboard);
+        $this->bot->sendMessageHTML($this->user->chat_id,__("messages.education_form"),$keyboard);
     }
 
     function run()
     {
-        $this->bot->sendMessageHTML($this->user->chat_id,"⚠️ <b>Внимание!</b> Пожалуйста, выберите форму обучения:");
+        $this->bot->sendMessageHTML($this->user->chat_id,__("messages.education_form_error"));
     }
 }

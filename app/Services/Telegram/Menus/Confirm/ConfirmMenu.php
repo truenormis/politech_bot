@@ -11,13 +11,6 @@ class ConfirmMenu extends Menu
 {
     protected string $name = 'init.confirm';
 
-    protected array $keyboard = [
-        [
-            'Да' => ConfirmTrueMenu::class,
-            'Нет' => ConfirmFalseMenu::class,
-        ]
-
-    ];
     function transfer()
     {
         $api = app(ApiService::class);

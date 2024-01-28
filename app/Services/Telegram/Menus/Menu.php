@@ -3,6 +3,7 @@
 namespace App\Services\Telegram\Menus;
 
 use App\Models\User;
+use App\Services\Telegram\Keyboard;
 use App\Telegram\Message;
 use App\Telegram\TelegramBot;
 
@@ -25,6 +26,7 @@ abstract class Menu
 
     public function __construct(Message $message)
     {
+        $this->keyboard = app(Keyboard::class)->getKeyboard($this);
         $this->message = $message;
         $this->user = User::where('chat_id',$message->chat->id)->first();
         $this->bot = app(TelegramBot::class);
@@ -58,6 +60,8 @@ abstract class Menu
 
     protected function getKeyboard(): array
     {
+
+
         if (!$this->keyboard || !is_array($this->keyboard)) {
             throw new \InvalidArgumentException('Invalid keyboard configuration');
         }

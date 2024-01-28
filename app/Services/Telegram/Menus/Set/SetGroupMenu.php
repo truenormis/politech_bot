@@ -26,9 +26,9 @@ class SetGroupMenu extends Menu
             $buttons = array_chunk($buttons, 2);
             $keyboard = $this->bot->createInlineKeyboard($buttons);
 
-            $this->bot->sendMessageHTML($this->user->chat_id,"Теперь выберите свою группу, <i>[например 👥 КІ-221]</i>:",$keyboard);
+            $this->bot->sendMessageHTML($this->user->chat_id,__("messages.set_group"),$keyboard);
         }else{
-            $this->bot->sendMessageHTML($this->user->chat_id,"⚠️ <b>Ошибка!</b> Группа не была найдена. Пожалуйста, попробуйте ввести данные заново...");
+            $this->bot->sendMessageHTML($this->user->chat_id,__("messages.group_not_found"));
             new SetFacultyMenu($this->message);
         }
 
@@ -36,6 +36,6 @@ class SetGroupMenu extends Menu
 
     function run()
     {
-        $this->bot->sendMessageHTML($this->user->chat_id,"⚠️ <b>Внимание!</b> Пожалуйста, выберите свою группу");
+        $this->bot->sendMessageHTML($this->user->chat_id,__("messages.set_group_error"));
     }
 }

@@ -10,6 +10,7 @@ class TelegramDirector
     public function __construct(private Message $message)
     {
         $user = $this->userCheck();
+        app()->setLocale($user->locale);
         //dd(1);
         MenuHandlerFactory::createHandler($user,$this->message);
     }

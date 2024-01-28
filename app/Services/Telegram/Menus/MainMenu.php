@@ -8,15 +8,10 @@ use Illuminate\Console\Scheduling\Schedule;
 class MainMenu extends Menu
 {
     protected string $name = 'main';
-    protected array $keyboard = [
-        ['📅 Расписание' => ScheduleMenu::class],
-        ['❓ Помощь' => HelpMenu::class], // Пункт "Помощь"
-        ['⚙️ Настройки' => SettingsMenu::class] // Пункт "Настройки"
-    ];
 
     function transfer()
     {
-        $this->bot->sendMessage($this->user->chat_id,"🏠 Вы в главном меню",$this->getKeyboard());
+        $this->bot->sendMessage($this->user->chat_id,__('messages.main'),$this->getKeyboard());
     }
 
     function run()
@@ -24,7 +19,7 @@ class MainMenu extends Menu
         if ($this->checkKeyboard()) {
             return;
         }
-        $this->bot->sendMessage($this->user->chat_id,"Выберите пункт в меню",$this->getKeyboard());
+        $this->bot->sendMessage($this->user->chat_id,__('messages.main_error'),$this->getKeyboard());
 
     }
 }
