@@ -1,5 +1,7 @@
 <?php
 
+
+use App\Http\Controllers\BotController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,4 +15,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::post('/un/bot', \App\Http\Controllers\BotController::class);
+Route::post('/bot', BotController::class);
+
+Route::get('/', function () {
+    return \App\Models\User::all();
+});
