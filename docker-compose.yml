@@ -1,0 +1,66 @@
+version: "3.3"
+
+services:
+    nginx:
+        image: "nginx"
+        ports:
+            - "8080:80"
+        volumes:
+            - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf
+            - ./:/var/www/
+        working_dir: /var/www/
+        depends_on:
+            - mysql
+        networks:
+            - unbot
+        hostname: botdev
+        container_name: botdev
+    app:
+        build:
+            args:
+                user: sammy
+                uid: 1000
+            context: ./docker/dockerfiles
+            dockerfile: php.Dockerfile
+        restart: unless-stopped
+        working_dir: /var/www/
+        user: "1001:1001"
+        volumes:
+            - ./:/var/www
+        networks:
+            - unbot
+
+    mysql:
+        image: mysql:8.0
+        env_file:
+            - docker/env/mysql.env
+        volumes:
+            - ./docker/db_data:/var/lib/mysql
+        networks:
+            - unbot
+    composer:
+        build:
+            context: ./docker/dockerfiles
+            dockerfile: composer.Dockerfile
+        volumes:
+            - ./:/var/www/
+        networks:
+            - unbot
+
+    artisan:
+        build:
+            context: ./docker/dockerfiles
+            dockerfile: php.Dockerfile
+        volumes:
+            - ./:/var/www/
+        entrypoint: ["php", "/var/www/artisan"]
+        networks:
+            - unbot
+    redis:
+        image: redis:latest
+        restart: always
+        networks:
+            - unbot
+networks:
+    unbot:
+        driver: bridge
