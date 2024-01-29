@@ -18,5 +18,9 @@ RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 # Install PHP extensions
 RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
 
+RUN pecl install redis \
+   # Redis is installed, enable it
+    && docker-php-ext-enable redis
+
 WORKDIR /var/www
 

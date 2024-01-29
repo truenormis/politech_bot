@@ -11,10 +11,10 @@ services:
         working_dir: /var/www/
         depends_on:
             - mysql
-            - app
         networks:
             - unbot
-
+        hostname: botdev
+        container_name: botdev
     app:
         build:
             args:
@@ -24,6 +24,7 @@ services:
             dockerfile: php.Dockerfile
         restart: unless-stopped
         working_dir: /var/www/
+        user: "1001:1001"
         volumes:
             - ./:/var/www
         networks:
@@ -42,7 +43,7 @@ services:
             context: ./docker/dockerfiles
             dockerfile: composer.Dockerfile
         volumes:
-            - ./docker/db_data:/var/www/
+            - ./:/var/www/
         networks:
             - unbot
 
@@ -55,7 +56,11 @@ services:
         entrypoint: ["php", "/var/www/artisan"]
         networks:
             - unbot
-
+    redis:
+        image: redis:latest
+        restart: always
+        networks:
+            - unbot
 networks:
     unbot:
         driver: bridge

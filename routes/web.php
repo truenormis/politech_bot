@@ -15,8 +15,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::post('/bot', BotController::class);
+Route::post('/dev/bot', BotController::class);
 
-Route::get('/', function () {
+Route::get('/dev/', function () {
     return \App\Models\User::all();
 });
