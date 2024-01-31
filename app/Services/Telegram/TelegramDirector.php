@@ -4,20 +4,27 @@ namespace App\Services\Telegram;
 
 use App\Models\User;
 use App\Telegram\Message;
+use Illuminate\Support\Facades\Auth;
+use SergiX44\Nutgram\Nutgram;
 
 class TelegramDirector
 {
-    public function __construct(private Message $message)
+
+    public function __invoke(Nutgram $bot)
     {
-        $user = $this->userCheck();
+        //$bot->sendMessage($bot->message()->text);
+        $user = $this->userCheck($bot->user()->id);
+        Auth::login($user);
+        app()->setLocale($user->locale);
         //dd(1);
-        MenuHandlerFactory::createHandler($user,$this->message);
+        //$bot->sendMessage(app()->getLocale());
+        MenuHandlerFactory::createHandler();
     }
 
-    private function userCheck() : User{
-        $user = User::where('chat_id',$this->message->chat->id)->first();
+    private function userCheck(int $id) : User{
+        $user = User::where('chat_id',$id)->first();
         if ($user === null){
-            $user = User::create(['chat_id' => $this->message->chat->id]);
+            $user = User::create(['chat_id' => $id]);
         }
         return $user;
     }

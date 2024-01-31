@@ -3,17 +3,21 @@
 namespace App\Services\Telegram\Menus;
 
 use App\Models\User;
+use App\Services\Telegram\Keyboard;
 use App\Telegram\Message;
 use App\Telegram\TelegramBot;
+use Illuminate\Support\Facades\Log;
+use SergiX44\Nutgram\Nutgram;
+use SergiX44\Nutgram\Telegram\Types\Keyboard\KeyboardButton;
+use SergiX44\Nutgram\Telegram\Types\Keyboard\ReplyKeyboardMarkup;
 
 abstract class Menu
 {
     protected array $keyboard;
     protected string $name;
-
-    protected Message $message;
-    protected User $user;
-    protected TelegramBot $bot;
+    protected ?\Illuminate\Contracts\Auth\Authenticatable $user;
+    //protected Message $message;
+    protected Nutgram $bot;
 
     /**
      * @return string
@@ -23,15 +27,17 @@ abstract class Menu
         return $this->name;
     }
 
-    public function __construct(Message $message)
+    public function __construct()
     {
-        $this->message = $message;
-        $this->user = User::where('chat_id',$message->chat->id)->first();
-        $this->bot = app(TelegramBot::class);
+        $this->keyboard = app(Keyboard::class)->getKeyboard($this);
+
+        $this->user = auth()->user();
+        $this->bot = app(Nutgram::class);
         if ($this->user->menu != $this->name){
             $this->user->update(['menu'=>$this->name]);
             $this->transfer();
-        }else{
+        }elseif (!$this->checkKeyboard())
+        {
             $this->run();
         }
 
@@ -42,7 +48,7 @@ abstract class Menu
         foreach ($currentKeyboard as $key => $value) {
             if ($key === $text) {
                 $menuClass = $value;
-                $menu = new $menuClass($this->message);
+                $menu = new $menuClass();
                 return true; // Класс меню найден
             } elseif (is_array($value)) {
                 // Рекурсивный вызов для вложенных массивов
@@ -56,35 +62,41 @@ abstract class Menu
     }
 
 
-    protected function getKeyboard(): array
+    protected function getKeyboard(): ReplyKeyboardMarkup
     {
+
+        //Log::channel('telegram')->info('Hello world!', $this->keyboard);
+
+
         if (!$this->keyboard || !is_array($this->keyboard)) {
             throw new \InvalidArgumentException('Invalid keyboard configuration');
         }
 
-        $transformedKeyboard = [];
+        $keyboard = ReplyKeyboardMarkup::make();
 
         foreach ($this->keyboard as $key => $value) {
             if (is_array($value)) {
-                $transformedValue = [];
+                $keyboardRow = [];
                 foreach ($value as $nestedKey => $nestedValue) {
                     // Добавляем текст для кнопки
-                    $transformedValue[] = ['text' => $nestedKey];
+                    $keyboardRow[] = KeyboardButton::make($nestedKey);
                 }
-                $transformedKeyboard['keyboard'][] = $transformedValue;
+                $keyboard->addRow(...$keyboardRow);
             } else {
-                $transformedValue[] = ['text' => $key];
-                // Преобразование основного массива
-                $transformedKeyboard['keyboard'][] = $transformedValue;
+                $button = KeyboardButton::make($key);
+                $keyboard->addRow($button);
             }
         }
 
-        return $transformedKeyboard;
+        return $keyboard;
     }
 
     protected function checkKeyboard(): bool
     {
-        return $this->keyboardNavigateToMenu($this->message->text,$this->keyboard);
+        if (!$this->keyboard) {
+            return false;
+        }
+        return $this->keyboardNavigateToMenu($this->bot->message()->text,$this->keyboard);
 
     }
     abstract function transfer();

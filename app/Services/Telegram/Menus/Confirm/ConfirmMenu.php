@@ -6,23 +6,18 @@ use App\Helpers\Md;
 use App\Models\User;
 use App\Services\Api\ApiService;
 use App\Services\Telegram\Menus\Menu;
+use SergiX44\Nutgram\Telegram\Properties\ParseMode;
+use function Laravel\Prompts\text;
 
 class ConfirmMenu extends Menu
 {
     protected string $name = 'init.confirm';
 
-    protected array $keyboard = [
-        [
-            'Да' => ConfirmTrueMenu::class,
-            'Нет' => ConfirmFalseMenu::class,
-        ]
-
-    ];
     function transfer()
     {
         $api = app(ApiService::class);
 
-        $user = User::where('chat_id', $this->message->chat->id)->first();
+        $user = auth()->user();
 
         $faculty = $api->getFaculties()->where('Key',$user->faculty)->pluck('Value')->first();
         $education_form = $api->getEducationForms()->where('Key',$user->education_form)->pluck('Value')->first();
@@ -36,16 +31,17 @@ class ConfirmMenu extends Menu
             'course' => $course,
             'group' => $group,
         ];
-        $data = Md::escapeSpecialCharactersInArray($data);
+
         //$this->bot->sendMessageHTML(1983524521, json_encode($data));
 
         try {
             $view = (string) view('confirm')->with($data);
+            $res = $this->bot->sendMessage(text: $view, parse_mode: ParseMode::HTML, reply_markup: $this->getKeyboard());
+
         } catch (\Exception $e) {
             //$this->bot->sendMessageHTML(1983524521, $e->getMessage());
 
         }
-        $res = $this->bot->sendMessage($this->user->chat_id,$view,$this->getKeyboard());
 
 
     }
@@ -55,7 +51,7 @@ class ConfirmMenu extends Menu
         if ($this->checkKeyboard()) {
             return;
         }
-        $this->bot->sendMessage($this->user->chat_id,"Пожалуйста выберете *Да* или *Нет*");
+        $this->bot->sendMessage(text: __("confirm_text_error"),parse_mode: ParseMode::HTML);
 
     }
 }

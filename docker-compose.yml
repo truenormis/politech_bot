@@ -12,7 +12,8 @@ services:
         depends_on:
             - mysql
         networks:
-            - unbot
+            - botdev
+            - bot_bots
         hostname: botdev
         container_name: botdev
     app:
@@ -28,7 +29,7 @@ services:
         volumes:
             - ./:/var/www
         networks:
-            - unbot
+            - botdev
 
     mysql:
         image: mysql:8.0
@@ -36,8 +37,10 @@ services:
             - docker/env/mysql.env
         volumes:
             - ./docker/db_data:/var/lib/mysql
+        hostname: mysql
+        container_name: mysql
         networks:
-            - unbot
+            - botdev
     composer:
         build:
             context: ./docker/dockerfiles
@@ -45,7 +48,7 @@ services:
         volumes:
             - ./:/var/www/
         networks:
-            - unbot
+            - botdev
 
     artisan:
         build:
@@ -55,12 +58,15 @@ services:
             - ./:/var/www/
         entrypoint: ["php", "/var/www/artisan"]
         networks:
-            - unbot
+            - botdev
     redis:
         image: redis:latest
         restart: always
         networks:
-            - unbot
+            - botdev
 networks:
-    unbot:
+    botdev:
         driver: bridge
+    bot_bots:
+        external: true
+
