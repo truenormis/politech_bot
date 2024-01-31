@@ -2,6 +2,7 @@
 
 namespace App\Services\Telegram;
 
+use App\Services\Telegram\Menus\Change\ChangeLocaleMenu;
 use App\Services\Telegram\Menus\Confirm\ConfirmFalseMenu;
 use App\Services\Telegram\Menus\Confirm\ConfirmMenu;
 use App\Services\Telegram\Menus\Confirm\ConfirmTrueMenu;
@@ -29,10 +30,18 @@ class Keyboard
                 [__('keyboard.settings') => SettingsMenu::class],
             ],
             ScheduleMenu::class => [
-                [__('keyboard.today_schedule') => ScheduleTodayMenu::class],
-                [__('keyboard.tomorrow_schedule') => ScheduleTomorrowMenu::class],
-                [__('keyboard.this_week_schedule') => ScheduleThisWeekMenu::class],
-                [__('keyboard.next_week_schedule') => ScheduleNextWeekMenu::class],
+                [
+                    __('keyboard.today_schedule') => ScheduleTodayMenu::class,
+                    __('keyboard.tomorrow_schedule') => ScheduleTomorrowMenu::class,
+                ],
+                [
+                    __('keyboard.this_week_schedule') => ScheduleThisWeekMenu::class,
+                    __('keyboard.next_week_schedule') => ScheduleNextWeekMenu::class,
+                ],
+//                [__('keyboard.today_schedule') => ScheduleTodayMenu::class],
+//                [__('keyboard.tomorrow_schedule') => ScheduleTomorrowMenu::class],
+//                [__('keyboard.this_week_schedule') => ScheduleThisWeekMenu::class],
+//                [__('keyboard.next_week_schedule') => ScheduleNextWeekMenu::class],
                 [__('keyboard.return_to_main_menu') => MainMenu::class],
             ],
             ConfirmMenu::class => [
@@ -43,6 +52,7 @@ class Keyboard
             ],
             SettingsMenu::class => [
                 [__('keyboard.change_group') => SetFacultyMenu::class],
+                [__('keyboard.change_locale') => ChangeLocaleMenu::class],
                 [__('keyboard.main_menu') => MainMenu::class],
             ],
         ];

@@ -3,6 +3,7 @@
 namespace App\Services\Telegram;
 
 use App\Services\Telegram\Callbacks\CallbackHandlerInterface;
+use App\Services\Telegram\Callbacks\ChangeLocaleCallback;
 use App\Services\Telegram\Callbacks\NullCallback;
 use App\Services\Telegram\Callbacks\SetCourseCallback;
 use App\Services\Telegram\Callbacks\SetEducationFormCallback;
@@ -21,7 +22,8 @@ class CallbackHandlerFactory
         'set_education_form' => SetEducationFormCallback::class,
         'set_course' => SetCourseCallback::class,
         'set_group' => SetGroupCallback::class,
-        'set_lang' => SetLocaleCallback::class
+        'set_lang' => SetLocaleCallback::class,
+        'change_lang' => ChangeLocaleCallback::class
 
         // Добавьте другие методы по мере необходимости
     ];
@@ -31,7 +33,6 @@ class CallbackHandlerFactory
         $method = $callback->method;
         //dd($method);
         if (!Arr::has(static::$handlers, $method)) {
-            // Можно записать логи или выполнить другие действия в случае, если метод не найден
             return new NullCallback();
 
         }

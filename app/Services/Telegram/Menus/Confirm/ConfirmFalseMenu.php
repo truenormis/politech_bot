@@ -4,6 +4,7 @@ namespace App\Services\Telegram\Menus\Confirm;
 
 use App\Services\Telegram\Menus\Menu;
 use App\Services\Telegram\Menus\Set\SetFacultyMenu;
+use SergiX44\Nutgram\Telegram\Types\Keyboard\ReplyKeyboardRemove;
 
 class ConfirmFalseMenu extends Menu
 {
@@ -11,15 +12,13 @@ class ConfirmFalseMenu extends Menu
 
     function transfer()
     {
-        $this->bot->sendMessageHTML($this->user->chat_id,__("messages.confirm_false"));
+        $this->bot->sendMessage(__("messages.confirm_false"), reply_markup: ReplyKeyboardRemove::make(true));
 
-        new SetFacultyMenu($this->message);
+        new SetFacultyMenu();
     }
 
     function run()
     {
-        $this->bot->sendMessageHTML($this->user->chat_id,__("messages.confirm_false"));
-
-        new SetFacultyMenu($this->message);
+        $this->transfer();
     }
 }

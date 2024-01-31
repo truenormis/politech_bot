@@ -2,8 +2,10 @@
 
 namespace App\Services\Telegram\Menus\Schedule;
 
+use App\Helpers\MessageHelper;
 use App\Services\Api\ApiService;
 use App\Services\Telegram\Menus\Menu;
+use SergiX44\Nutgram\Telegram\Properties\ParseMode;
 
 class ScheduleTomorrowMenu extends Menu
 {
@@ -13,20 +15,17 @@ class ScheduleTomorrowMenu extends Menu
         $api = app(ApiService::class);
 
 
-        $scheduleTomorrow = $api->schedule($this->user->group)->getTomorrow()->toArray();
-        if (count($scheduleTomorrow)){
-            $groupedData = collect($scheduleTomorrow)->groupBy(['week_day', function (array $item) {
-                return $item['study_time'];
-            }], preserveKeys: true);
-            dump($groupedData);
-            $view = (string)view('schedule')->with(['data' => $groupedData]);
-            //dump($view);
+        $schedule = $api->schedule($this->user->group)->getTomorrow();
+        if (count($schedule)){
+            $this->bot->sendMessage(text: MessageHelper::fromApiToTelegram($schedule), parse_mode: ParseMode::HTML);
+        }else{
+            $this->bot->sendMessage(__("messages.schedule_this_week"));
         }
-        $this->bot->sendMessageHTML($this->user->chat_id,__("messages.schedule_tomorrow"));
-        new ScheduleMenu($this->message);
+        new ScheduleMenu();
     }
 
     function run()
     {
+        $this->transfer();
     }
 }

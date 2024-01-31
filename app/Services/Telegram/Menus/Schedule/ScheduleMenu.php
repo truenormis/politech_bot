@@ -4,6 +4,7 @@ namespace App\Services\Telegram\Menus\Schedule;
 
 use App\Services\Telegram\Menus\MainMenu;
 use App\Services\Telegram\Menus\Menu;
+use function Laravel\Prompts\text;
 
 class ScheduleMenu extends Menu
 {
@@ -13,19 +14,12 @@ class ScheduleMenu extends Menu
     function transfer()
     {
         //dd($this->getKeyboard());
-        $this->bot->sendMessageHTML($this->user->chat_id,__("messages.schedule"),$this->getKeyboard());
+        $this->bot->sendMessage(text: __("messages.schedule"), reply_markup: $this->getKeyboard());
 
     }
 
     function run()
     {
-        if ($this->checkKeyboard()) {
-            return;
-        }
-        $this->bot->sendMessageHTML(
-            $this->user->chat_id,
-            __("message.schedule_error"),
-            $this->getKeyboard()
-        );
+        $this->bot->sendMessage(text: __("messages.schedule_error"), reply_markup: $this->getKeyboard());
     }
 }

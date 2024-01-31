@@ -11,15 +11,11 @@ class MainMenu extends Menu
 
     function transfer()
     {
-        $this->bot->sendMessage($this->user->chat_id,__('messages.main'),$this->getKeyboard());
+        $this->bot->sendMessage(text: __('messages.main'),reply_markup: $this->getKeyboard());
     }
 
     function run()
     {
-        if ($this->checkKeyboard()) {
-            return;
-        }
-        $this->bot->sendMessage($this->user->chat_id,__('messages.main_error'),$this->getKeyboard());
-
+        $this->bot->sendMessage(text: __('messages.main_error'), reply_markup: $this->getKeyboard());
     }
 }

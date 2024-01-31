@@ -8,7 +8,7 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('locale')->after('group')->default('ru');
+            $table->string('locale')->default('ru');
 
         });
     }

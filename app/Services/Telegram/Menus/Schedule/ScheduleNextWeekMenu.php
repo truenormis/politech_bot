@@ -2,8 +2,12 @@
 
 namespace App\Services\Telegram\Menus\Schedule;
 
+use App\Helpers\MessageHelper;
 use App\Services\Api\ApiService;
 use App\Services\Telegram\Menus\Menu;
+use Carbon\Carbon;
+use SergiX44\Nutgram\Telegram\Properties\ParseMode;
+use function Laravel\Prompts\text;
 
 class ScheduleNextWeekMenu extends Menu
 {
@@ -13,37 +17,19 @@ class ScheduleNextWeekMenu extends Menu
         $api = app(ApiService::class);
 
 
-        $scheduleNextWeek = $api->schedule($this->user->group)->getNextWeek()->toArray();
-        if (count($scheduleNextWeek)){
-            $groupedData = collect($scheduleNextWeek)->groupBy(['week_day', function (array $item) {
-                return $item['study_time'];
-            }], preserveKeys: true);
-            dump($groupedData);
-            $view = (string)view('schedule')->with(['data' => $groupedData]);
-            //dump($view);
-            $this->bot->sendMessageHTML($this->user->chat_id,$view);
+        $schedule = $api->schedule($this->user->group)->getNextWeek();
+        if (count($schedule)){
+            $this->bot->sendMessage(text: MessageHelper::fromApiToTelegram($schedule), parse_mode: ParseMode::HTML);
         }else{
-            $this->bot->sendMessageHTML($this->user->chat_id,__("messages.schedule_next_week"));
+            $this->bot->sendMessage(__("messages.schedule_next_week"));
         }
 
 
-        new ScheduleMenu($this->message);
+        new ScheduleMenu();
     }
 
     function run()
     {
-        $api = app(ApiService::class);
-
-
-        $scheduleToday = $api->schedule($this->user->group)->getToday()->toArray();
-
-        $groupedData = collect($scheduleToday)->groupBy(['week_day', function (array $item) {
-            return $item['study_time'];
-        }], preserveKeys: true);
-        dump($groupedData);
-        $view = (string)view('schedule')->with(['data' => $groupedData]);
-        //dump($view);
-        $this->bot->sendMessageHTML($this->user->chat_id,$view);
-        new ScheduleMenu($this->message);
+        $this->transfer();
     }
 }

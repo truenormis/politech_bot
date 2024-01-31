@@ -5,6 +5,10 @@ namespace App\Services\Telegram\Menus\Set;
 use App\Models\User;
 use App\Services\Api\ApiService;
 use App\Services\Telegram\Menus\Menu;
+use SergiX44\Nutgram\Telegram\Properties\ParseMode;
+use SergiX44\Nutgram\Telegram\Types\Keyboard\InlineKeyboardButton;
+use SergiX44\Nutgram\Telegram\Types\Keyboard\InlineKeyboardMarkup;
+use function Laravel\Prompts\text;
 
 
 class SetGroupMenu extends Menu
@@ -13,29 +17,31 @@ class SetGroupMenu extends Menu
     function transfer()
     {
         $api = app(ApiService::class);
-        $user = User::where('chat_id',$this->message->chat->id)->first();
+        $user = auth()->user();
 
         $groups = $api->getGroups($user->faculty,$user->education_form,$user->course);
         if (count($groups)){
-            $buttons = [];
-            foreach ($groups as $group) {
-                $callback = json_encode(['method' => 'set_group','data' => $group['Key']]);
-                $buttons[] = ['text' => $group['Value'], 'callback_data' => $callback];
+            $keyboard = InlineKeyboardMarkup::make();
+            $buttonRow = [];
+            foreach ($groups as $item) {
+                $callback = json_encode(['method' => 'set_group','data' => $item['Key']]);
+                $buttonRow[] = InlineKeyboardButton::make($item['Value'], callback_data: $callback);
+                if (count($buttonRow) == 2) {
+                    $keyboard->addRow(...$buttonRow);
+                    $buttonRow = [];
+                }
             }
 
-            $buttons = array_chunk($buttons, 2);
-            $keyboard = $this->bot->createInlineKeyboard($buttons);
-
-            $this->bot->sendMessageHTML($this->user->chat_id,__("messages.set_group"),$keyboard);
+            $this->bot->sendMessage(text: __("messages.set_group"), reply_markup: $keyboard);
         }else{
-            $this->bot->sendMessageHTML($this->user->chat_id,__("messages.group_not_found"));
-            new SetFacultyMenu($this->message);
+            $this->bot->sendMessage(text: __("messages.group_not_found"),parse_mode: ParseMode::HTML);
+            new SetFacultyMenu();
         }
 
     }
 
     function run()
     {
-        $this->bot->sendMessageHTML($this->user->chat_id,__("messages.set_group_error"));
+        $this->bot->sendMessage(text: __("messages.set_group_error"),parse_mode: ParseMode::HTML);
     }
 }

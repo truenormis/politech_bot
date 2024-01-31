@@ -4,6 +4,10 @@ namespace App\Services\Telegram\Menus\Set;
 
 use App\Services\Api\ApiService;
 use App\Services\Telegram\Menus\Menu;
+use SergiX44\Nutgram\Telegram\Properties\ParseMode;
+use SergiX44\Nutgram\Telegram\Types\Keyboard\InlineKeyboardButton;
+use SergiX44\Nutgram\Telegram\Types\Keyboard\InlineKeyboardMarkup;
+use function Laravel\Prompts\text;
 
 class SetEducationFormMenu extends Menu
 {
@@ -12,20 +16,25 @@ class SetEducationFormMenu extends Menu
     {
         $api = app(ApiService::class);
         $educationForms = $api->getEducationForms();
-        $buttons = [];
-        foreach ($educationForms as $educationForm) {
-            $callback = json_encode(['method' => 'set_education_form','data' => $educationForm['Key']]);
-            $buttons[] = ['text' => $educationForm['Value'], 'callback_data' => $callback];
+        $keyboard = InlineKeyboardMarkup::make();
+        $buttonRow = [];
+        foreach ($educationForms as $faculty) {
+            $callback = json_encode(['method' => 'set_education_form','data' => $faculty['Key']]);
+            $buttonRow[] = InlineKeyboardButton::make($faculty['Value'], callback_data: $callback);
+            if (count($buttonRow) == 2) {
+                $keyboard->addRow(...$buttonRow);
+                $buttonRow = [];
+            }
+        }
+        if (!empty($buttonRow)) {
+            $keyboard->addRow(...$buttonRow);
         }
 
-        $buttons = array_chunk($buttons, 2);
-        $keyboard = $this->bot->createInlineKeyboard($buttons);
-
-        $this->bot->sendMessageHTML($this->user->chat_id,__("messages.education_form"),$keyboard);
+        $this->bot->sendMessage(text: __("messages.education_form"),reply_markup:  $keyboard);
     }
 
     function run()
     {
-        $this->bot->sendMessageHTML($this->user->chat_id,__("messages.education_form_error"));
+        $this->bot->sendMessage(text: __("messages.education_form_error"),parse_mode: ParseMode::HTML);
     }
 }

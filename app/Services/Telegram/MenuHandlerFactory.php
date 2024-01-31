@@ -13,10 +13,14 @@ use App\Services\Telegram\Menus\Set\SetCourseMenu;
 use App\Services\Telegram\Menus\Set\SetEducationFormMenu;
 use App\Services\Telegram\Menus\Set\SetFacultyMenu;
 use App\Services\Telegram\Menus\Set\SetGroupMenu;
+use App\Services\Telegram\Menus\Set\SetLocaleMenu;
 use App\Services\Telegram\Menus\SettingsMenu;
 use App\Services\Telegram\Menus\StartMenu;
 use App\Telegram\Message;
 use Illuminate\Support\Arr;
+use Nutgram\Laravel\Facades\Telegram;
+use SergiX44\Nutgram\Nutgram;
+use function Laravel\Prompts\text;
 
 class MenuHandlerFactory
 {
@@ -27,6 +31,7 @@ class MenuHandlerFactory
         'init.set_faculty' => SetFacultyMenu::class,
         'init.set_education_form' => SetEducationFormMenu::class,
         'init.set_course' => SetCourseMenu::class,
+        'init.set_locale' => SetLocaleMenu::class,
         'init.confirm' => ConfirmMenu::class,
         'init.confirm.true' => ConfirmTrueMenu::class,
         'init.confirm.false' => ConfirmFalseMenu::class,
@@ -41,15 +46,17 @@ class MenuHandlerFactory
         // Добавьте другие методы по мере необходимости
     ];
 
-    public static function createHandler(User $user,Message $message)
+    public static function createHandler()
     {
-        $menu = $user->menu;
+        $menu = auth()->user()->menu;
+
+
         if (!Arr::has(static::$handlers, $menu)) {
-            return new StartMenu($message);
+            return new StartMenu();
         }
 
         $handlerClass = static::$handlers[$menu];
 
-        return new $handlerClass($message);
+        return new $handlerClass();
     }
 }

@@ -6,16 +6,17 @@ use App\Models\User;
 use App\Services\Telegram\Menus\Set\SetCourseMenu;
 use App\Telegram\Callback;
 use App\Telegram\TelegramBot;
+use SergiX44\Nutgram\Nutgram;
 
 class SetEducationFormCallback implements CallbackHandlerInterface
 {
 
     public function handle(Callback $callback)
     {
-        $bot = app(TelegramBot::class);
-        $bot->deleteMessage($callback->message);
-        $user = User::where('chat_id', $callback->message->chat->id)->first();
+        $bot = app(Nutgram::class);
+        $bot->deleteMessage($bot->userId(),$bot->messageId());
+        $user = auth()->user();
         $user->update(['education_form' => $callback->data]);
-        new SetCourseMenu($callback->message);
+        new SetCourseMenu();
     }
 }

@@ -14,15 +14,13 @@ class ConfirmTrueMenu extends Menu
 
     function transfer()
     {
-        $this->bot->sendMessageHTML($this->user->chat_id,__("messages.confirm_true"));
+        $this->bot->sendMessage(__("messages.confirm_true"));
 
-        new MainMenu($this->message);
+        new MainMenu();
     }
 
     function run()
     {
-        $this->bot->sendMessageHTML($this->user->chat_id,"Сохраняю данные... 💾");
-
-        new MainMenu($this->message);
+        $this->transfer();
     }
 }
