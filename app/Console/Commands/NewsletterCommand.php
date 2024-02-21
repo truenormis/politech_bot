@@ -35,7 +35,7 @@ class NewsletterCommand extends Command
             app()->setLocale($user->locale);
 
             $text = view('newsletter')->render();
-            $res = $bot->sendPhoto(photo: "https://botik.cynic.club/dev/img/11BETA.png", chat_id: $user->chat_id);
+            $res = $bot->sendPhoto(photo: "https://ih1.redbubble.net/image.5090039015.1125/bg,f8f8f8-flat,750x,075,f-pad,750x1000,f8f8f8.u9.jpg", chat_id: $user->chat_id);
             $res = $bot->sendMessage(text: $text, chat_id: $user->chat_id, parse_mode: ParseMode::HTML, link_preview_options: LinkPreviewOptions::make(is_disabled: true));
             $this->getInfo($res->chat);
 
